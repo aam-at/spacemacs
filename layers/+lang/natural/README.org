@@ -1,0 +1,67 @@
+#+TITLE: Natural languages layer
+
+[[file:img/sir.png]]
+
+* Table of Contents                                        :TOC_4_gh:noexport:
+ - [[#description][Description]]
+ - [[#install][Install]]
+ - [[#key-bindings][Key bindings]]
+ - [[#current-issues][Current Issues]]
+   - [[#running-a-flycheck-checker-everywhere][Running a flycheck checker everywhere]]
+   - [[#disabled-checkers][Disabled checkers]]
+
+* Description
+
+  This layer hooks [[https://github.com/amperser/proselint][proselint]] into flycheck to making typing go good, obviously.
+
+  While flycheck-proselint is enabled (via the toggle or the config var), it
+  will take precedence and be the ONLY functioning flycheck checker. Toggling
+  it off will return the normal flycheck functioning to the buffer.
+
+  It is possible to manually change this behavior using the
+  `flycheck-add-next-checker` function.
+
+* Install
+
+Install the proselint executable. Make sure it is in your $PATH.
+
+#+begin_src sh
+  pip install proselint
+#+end_src
+
+Add the following to your =~/.spacemacs=
+
+#+begin_src emacs-lisp
+  (setq-default dotspacemacs-configuration-layers '(prose))
+#+end_src
+
+By default, proselint is not started immediately in buffers. You can change this
+behavior by setting the `prose-proselint-enable-by-default` variable to non-nil.
+
+#+begin_src emacs-lisp
+  (setq-default dotspacemacs-configuration-layers '(prose :variables
+                                                          prose-proselint-enable-by-default t))
+#+end_src
+
+* Key bindings
+
+| Key Binding  | Description                                        |
+|--------------+----------------------------------------------------|
+| ~<SPC> t P~  | Toggles the proselint flycheck feedback on and off |
+
+* Current Issues
+
+** Running a flycheck checker everywhere
+
+   Flycheck only allows one checker to be run, without explicitly setting the
+   the next checker that will be run. Emacs-Lisp mode runs 3 elisp checkers by
+   knowing ahead of time what checkers they are and then defining them via the
+   `flycheck-add-next-checker` function (describe that function for more info).
+   Because the proselint checker can be run in all modes, we cannot anticipate
+   and set the next-checker, which means that we can have to run the proselint
+   checker by itself.
+
+** Disabled checkers
+
+   Often times get the 'curly quotes' error from proselint which is annoying
+   noise. How are we going to handle disabling this and others?
