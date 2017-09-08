@@ -506,7 +506,7 @@ Headline^^            Visit entry^^               Filter^^                    Da
 
 (defun org/init-org-projectile ()
   (use-package org-projectile
-    :commands (org-projectile:location-for-project)
+    :commands (org-projectile-location-for-project)
     :init
     (progn
       (spacemacs/set-leader-keys
@@ -517,12 +517,11 @@ Headline^^            Visit entry^^               Filter^^                    Da
     :config
     (if (file-name-absolute-p org-projectile-file)
         (progn
-          (setq org-projectile:projects-file org-projectile-file)
-          (push (org-projectile:project-todo-entry
-                 nil nil nil :empty-lines 1)
+          (setq org-projectile-projects-file org-projectile-file)
+          (push (org-projectile-project-todo-entry :empty-lines 1)
                 org-capture-templates))
-      (org-projectile:per-repo)
-      (setq org-projectile:per-repo-filename org-projectile-file))))
+      (org-projectile-per-project)
+      (setq org-projectile-per-project-filepath org-projectile-file))))
 
 (defun org/init-ox-twbs ()
   (spacemacs|use-package-add-hook org :post-config (require 'ox-twbs)))
