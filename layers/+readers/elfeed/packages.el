@@ -14,7 +14,7 @@
         (elfeed-goodies :toggle elfeed-enable-goodies)
         elfeed-org
         (elfeed-web :toggle elfeed-enable-web-interface)
-        ))
+        persp-mode))
 
 (defun elfeed/init-elfeed ()
   (use-package elfeed
@@ -22,10 +22,32 @@
     :init (spacemacs/set-leader-keys "are" 'elfeed)
     :config
     (progn
+      (defalias 'elfeed-search-tag-all-star
+        (elfeed-expose #'elfeed-search-tag-all 'star)
+        "Add the `star' tag to all selected entries.")
+
+      (defalias 'elfeed-search-untag-all-star
+        (elfeed-expose #'elfeed-search-untag-all 'star)
+        "Remove the `star' tag from all selected entries.")
+
+      (defalias 'elfeed-search-tag-all-fav
+        (elfeed-expose #'elfeed-search-tag-all 'fav)
+        "Add the `fav' tag to all selected entries.")
+
+      (defalias 'elfeed-search-untag-all-fav
+        (elfeed-expose #'elfeed-search-untag-all 'fav)
+        "Remove the `fav' tag from all selected entries.")
+
       (evilified-state-evilify-map elfeed-search-mode-map
         :mode elfeed-search-mode
         :eval-after-load elfeed-search
         :bindings
+        "R"  'elfeed-mark-all-as-read
+        "U"  'elfeed-mark-all-as-unread
+        "*"  'elfeed-search-tag-all-star
+        "!"  'elfeed-search-untag-all-star
+        "f"  'elfeed-search-tag-all-fav
+        "F"  'elfeed-search-untag-all-fav
         "c"  'elfeed-db-compact
         "gr" 'elfeed-update
         "gR" 'elfeed-search-update--force
@@ -70,9 +92,22 @@
   (use-package elfeed-web
     :defer t
     :commands elfeed-web-stop
-    :init
+    :init (when elfeed-enable-web-interface
+            ;; TODO check if the port is already in use
+            ;; hack to force elfeed feature to be required before elfeed-search
+            (require 'elfeed)
+            (elfeed-web-start))))
+
+(defun elfeed/post-init-persp-mode ()
+  (spacemacs|define-custom-layout elfeed-spacemacs-layout-name
+    :binding elfeed-spacemacs-layout-binding
+    :body
     (progn
-      ;; TODO check if the port is already in use
-      ;; hack to force elfeed feature to be required before elfeed-search
-      (require 'elfeed)
-      (elfeed-web-start))))
+      (defun spacemacs-layouts/add-elfeed-buffer-to-persp ()
+        (persp-add-buffer (current-buffer)
+                          (persp-get-by-name
+                           elfeed-spacemacs-layout-name)))
+      (spacemacs/add-to-hooks 'spacemacs-layouts/add-elfeed-buffer-to-persp
+                              '(elfeed-search-mode
+                                elfeed-show-mode))
+      (call-interactively 'spacemacs//elfeed-load-db-and-open))))
