@@ -98,7 +98,11 @@
   (use-package treemacs-projectile
     :after treemacs
     :defer t
-    :init (require 'treemacs-projectile)))
+    :init
+    (require 'treemacs-projectile)
+    (spacemacs/set-leader-keys
+      "fp" #'treemacs-projectile
+      "fP" #'treemacs-projectile)))
 
 (defun treemacs/init-treemacs-persp ()
   (use-package treemacs-persp
