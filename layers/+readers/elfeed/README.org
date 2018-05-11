@@ -114,6 +114,12 @@ Use =SPC ?= to discover major-mode key bindings.
 
 | Key binding | Description                                       |
 |-------------+---------------------------------------------------|
+| ~R~         | mark all as read                                  |
+| ~U~         | mark all as unread                                |
+| ~*~         | mark with star                                    |
+| ~!~         | remove star                                       |
+| ~f~         | add to favourites                                 |
+| ~F~         | remove from favourites                            |
 | ~c~         | compact feed db                                   |
 | ~gr~        | update all the feeds                              |
 | ~gR~        | force refresh view of the feed listing            |

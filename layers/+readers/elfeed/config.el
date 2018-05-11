@@ -25,5 +25,12 @@
 
 (defvar elfeed-enable-web-interface nil
   "If non nil start a web server to consult the database in a web browser.")
+
 (defvar elfeed-enable-goodies t
   "If non nil enable elfeed-goodies (split-pane...).")
+
+(defvar elfeed-spacemacs-layout-name "@Elfeed"
+  "Name used in the setup for `spacemacs-layouts' micro-state")
+
+(defvar elfeed-spacemacs-layout-binding "f"
+  "Binding used in the setup for `spacemacs-layouts' micro-state")
