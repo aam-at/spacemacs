@@ -37,6 +37,9 @@ auto-save-list/
 bbdb
 bookmarks
 crown/
+/recentf
+.mc-lists.el
+workspace
 eclipse.jdt.ls
 edts/
 elnode/
