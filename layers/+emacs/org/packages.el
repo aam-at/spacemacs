@@ -108,7 +108,33 @@
 (defun org/init-helm-org-rifle ()
   (use-package helm-org-rifle
     :defer t
-    :init (spacemacs/set-leader-keys "ao/" 'helm-org-rifle)))
+    :init
+    (progn
+      (spacemacs/declare-prefix "aoR" "rifle")
+      (spacemacs/set-leader-keys
+        "ao/" 'helm-org-rifle
+        "aoRr" 'helm-org-rifle
+        "aoRR" 'helm-org-rifle-occur
+        "aoRc" 'helm-org-rifle-current-buffer
+        "aoRC" 'helm-org-rifle-occur-current-buffer
+        "aoRd" 'helm-org-rifle-directories
+        "aoRD" 'helm-org-rifle-occur-directories
+        "aoRf" 'helm-org-rifle-files
+        "aoRF" 'helm-org-rifle-occur-files
+        "aoRa" 'helm-org-rifle-agenda-files
+        "aoRA" 'helm-org-rifle-occur-agenda-files)
+      (spacemacs/declare-prefix-for-mode 'org-mode "mR" "rifle")
+      (spacemacs/set-leader-keys-for-major-mode 'org-mode
+        "Rr" 'helm-org-rifle
+        "RR" 'helm-org-rifle-occur
+        "Rc" 'helm-org-rifle-current-buffer
+        "RC" 'helm-org-rifle-occur-current-buffer
+        "Rd" 'helm-org-rifle-directories
+        "RD" 'helm-org-rifle-occur-directories
+        "Rf" 'helm-org-rifle-files
+        "RF" 'helm-org-rifle-occur-files
+        "Ra" 'helm-org-rifle-agenda-files
+        "RA" 'helm-org-rifle-occur-agenda-files))))
 
 (defun org/init-htmlize ()
   (use-package htmlize
