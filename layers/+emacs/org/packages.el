@@ -959,21 +959,60 @@ Headline^^            Visit entry^^               Filter^^                    Da
 
 (defun org/init-org-trello ()
   (use-package org-trello
-    :defer t
+    :after org
     :init
-    (spacemacs/declare-prefix-for-mode 'org-mode "mmt" "trello")
-    (spacemacs/declare-prefix-for-mode 'org-mode "mmtd" "sync down")
-    (spacemacs/declare-prefix-for-mode 'org-mode "mmtu" "sync up")
-    (spacemacs/set-leader-keys-for-major-mode 'org-mode
-      "mtI" 'org-trello-install-key-and-token
-      "mta" 'org-trello-archive-card
-      "mtc" 'org-trello-create-board-and-install-metadata
-      "mti" 'org-trello-install-board-metadata
-      "mtm" 'org-trello-update-board-metadata
-      "mtdb" 'spacemacs/org-trello-pull-buffer
-      "mtdc" 'spacemacs/org-trello-pull-card
-      "mtub" 'spacemacs/org-trello-push-buffer
-      "mtuc" 'spacemacs/org-trello-push-card)))
+    (progn
+      (setq org-trello--config-dir (concat spacemacs-cache-directory "trello")
+            org-trello--config-file (concat org-trello--config-dir "/%s.el"))
+      (add-to-list 'auto-mode-alist '("\\.trello\\'" . org-mode))
+      ;; add a hook function to check if this is trello file, then activate the org-trello minor mode.
+      (add-hook 'org-mode-hook
+                (lambda ()
+                  (let ((filename (buffer-file-name (current-buffer))))
+                    (when (and filename
+                               (string= "trello"
+                                        (file-name-extension filename)))
+                      (org-trello-mode)))))
+      :config
+      (progn
+        (spacemacs/declare-prefix-for-mode 'org-mode "ot" "trello")
+        (spacemacs/declare-prefix-for-mode 'org-mode "otd" "sync down")
+        (spacemacs/declare-prefix-for-mode 'org-mode "otu" "sync up")
+        (spacemacs/set-leader-keys-for-minor-mode 'org-trello-mode
+          ;; init / sync board / key
+          "oti" 'org-trello-install-board-metadata
+          "otI" 'org-trello-install-key-and-token
+          "otc" 'org-trello-create-board-and-install-metadata
+          "otm" 'org-trello-update-board-metadata
+          ;; comment
+          "otC" 'org-trello-add-card-comment
+          ;; assign to me / user
+          "ot!" 'org-trello-toggle-assign-me
+          "ot@" 'org-trello-toggle-assign-user
+          ;; archive card(s)
+          "ota" 'org-trello-archive-card
+          "otA" 'org-trello-archive-cards
+          ;; jump to card / borad
+          "otj" 'org-trello-jump-to-trello-card
+          "otJ" 'org-trello-jump-to-trello-board
+          ;; kill the card / cards
+          "otk" 'org-trello-kill-entity
+          "otK" 'org-trello-kill-cards
+          "otg" 'org-trello-abort-sync
+          ;; push / pull buffer / card / comment
+          "otdb" 'spacemacs/org-trello-pull-buffer
+          "otdc" 'spacemacs/org-trello-pull-card
+          "otdC" 'spacemacs/org-trello-pull-comment
+          "otub" 'spacemacs/org-trello-push-buffer
+          "otuc" 'spacemacs/org-trello-push-card
+          "otuC" 'spacemacs/org-trello-push-comment
+          ;; misc and help
+          "ott" 'org-trello-check-setup
+          "otD" 'org-trello-delete-setup
+          "otB" 'org-trello-bug-report
+          "otv" 'org-trello-version
+          "oth" 'org-trello-help-describing-bindings)))))
+
 
 (defun org/init-org-roam ()
   (use-package org-roam

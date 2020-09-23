@@ -102,6 +102,14 @@ into buffer, but are not Evil-aware (e.g. `org-insert-item')."
   (interactive)
   (org-trello-sync-card))
 
+(defun spacemacs/org-trello-pull-comment ()
+  (interactive)
+  (org-trello-sync-comment 1))
+
+(defun spacemacs/org-trello-push-comment ()
+  (interactive)
+  (org-trello-sync-comment))
+
 (defun spacemacs/org-clock-jump-to-current-clock ()
   (interactive)
   (org-clock-jump-to-current-clock))
