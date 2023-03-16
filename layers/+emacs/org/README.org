@@ -73,6 +73,7 @@
     - [[#verb-response-headers-mode-bindings][Verb-response-headers-mode bindings]]
   - [[#org-roam][Org-roam]]
   - [[#transclusion][Transclusion]]
+  - [[#remark][Remark]]
 
 * Description
 This layer enables [[http://orgmode.org/][org mode]] for Spacemacs.
@@ -1200,3 +1201,16 @@ Key binding prefixes:
 | ~SPC m u h~ | Promote transcluded subtree    |
 | ~SPC m u r~ | Refresh transclusion in buffer |
 | ~SPC m u g~ | Go to transclusion source      |
+
+** Remark
+
+| Key binding | Description                     |
+|-------------+---------------------------------|
+| ~SPC m r m~ | Mark selection with default pen |
+| ~SPC m r g~ | Mark selection with green pen   |
+| ~SPC m r y~ | Mark selection with yellow pen  |
+| ~SPC m r r~ | Mark selection with red pen     |
+| ~SPC m r o~ | Open selected highlight         |
+| ~SPC m r k~ | Go to the previous highlight    |
+| ~SPC m r j~ | Go to the next highlight        |
+| ~SPC m r d~ | Delete selected highlight       |

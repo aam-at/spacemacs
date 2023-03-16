@@ -70,6 +70,7 @@
     (org-roam-ui :toggle org-enable-roam-ui)
     (valign :toggle org-enable-valign)
     (org-appear :toggle org-enable-appear-support)
+    (org-remark :toggle org-enable-remark-support)
     (org-transclusion :toggle org-enable-transclusion-support)
     helm
     (ox-asciidoc :toggle org-enable-asciidoc-support)))
@@ -1135,6 +1136,60 @@ Headline^^            Visit entry^^               Filter^^                    Da
                   (add-hook 'evil-insert-state-entry-hook #'org-appear-manual-start nil t)
                   (add-hook 'evil-insert-state-exit-hook #'org-appear-manual-stop nil t))))))
 
+(defun org/init-org-remark ()
+  (use-package org-remark
+    :defer t
+    :commands (org-remark-mark
+               org-remark-mark-green
+               org-remark-mark-yellow
+               org-remark-mark-red-line
+               org-remark-create)
+    :init
+    (progn
+      ;; global tracking
+      (org-remark-global-tracking-mode +1)
+      ;; custom pens
+      (setq org-remark-create-default-pen-set nil)
+      (org-remark-create "green"
+                         '(:underline "gold" :background "forest green")
+                         '(CATEGORY "interesting"))
+      (org-remark-create "yellow"
+                         '(:underline "gold" :background "lemon chiffon")
+                         '(CATEGORY "important"))
+      (org-remark-create "red-line"
+                         '(:underline (:color "dark red" :style wave)
+                                      :background "indianred")
+                         '(CATEGORY "review" help-echo "Review this"))
+      ;; emacs keybindings
+      (define-key global-map (kbd "C-c n m") #'org-remark-mark)
+      (define-key global-map (kbd "C-c n g") #'org-remark-mark-green)
+      (define-key global-map (kbd "C-c n y") #'org-remark-mark-yellow)
+      (define-key global-map (kbd "C-c n r") #'org-remark-mark-red-line)
+
+      (with-eval-after-load 'org-remark
+        (define-key org-remark-mode-map (kbd "C-c n o") #'org-remark-open)
+        (define-key org-remark-mode-map (kbd "C-c n ]") #'org-remark-view-next)
+        (define-key org-remark-mode-map (kbd "C-c n [") #'org-remark-view-prev)
+        (define-key org-remark-mode-map (kbd "C-c n d") #'org-remark-remove))
+
+      ;; spacemacs keybindings
+      (spacemacs|add-toggle org-remark
+        :status org-remark-highlights-hidden
+        :on (org-remark-toggle)
+        :off (org-remark-toggle)
+        :documentation "Toggle between highlights showing or hiding."
+        :evil-leader "tM")
+      (spacemacs/declare-prefix-for-mode 'org-mode "mh" "org-remark")
+      (spacemacs/set-leader-keys-for-major-mode 'org-mode
+        "hm" #'org-remark-mark
+        "hg" #'org-remark-mark-green
+        "hy" #'org-remark-mark-yellow
+        "hr" #'org-remark-mark-red-line
+        "ho" #'org-remark-open
+        "hk" #'org-remark-prev
+        "hj" #'org-remark-next
+        "hd" #'org-remark-delete))))
+
 (defun org/init-org-transclusion ()
   (use-package org-transclusion
     :defer t
@@ -1147,8 +1202,10 @@ Headline^^            Visit entry^^               Filter^^                    Da
       "uD" #'org-transclusion-remove-all
       "ul" #'org-transclusion-demote-subtree
       "uh" #'org-transclusion-promote-subtree
+      "ue" #'org-transclusion-live-sync-start
       "ur" #'org-transclusion-refresh
-      "ug" #'org-transclusion-move-to-source)))
+      "ug" #'org-transclusion-move-to-source
+      "uG" #'org-transclusion-open-source)))
 
 (defun org/init-ox-asciidoc ()
   (use-package ox-asciidoc
