@@ -67,7 +67,10 @@
     (org-sticky-header :toggle org-enable-sticky-header)
     (verb :toggle org-enable-verb-support)
     (org-roam :toggle org-enable-roam-support)
-    (org-roam-ui :toggle org-enable-roam-ui)
+    (org-roam-ui :toggle org-enable-roam-ui
+                 :location (recipe :fetcher github
+                                   :repo "aam-at/org-roam-ui"
+                                   :files (:defaults "out")))
     (valign :toggle org-enable-valign)
     (org-appear :toggle org-enable-appear-support)
     (org-remark :toggle org-enable-remark-support)
