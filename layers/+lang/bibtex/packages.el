@@ -26,6 +26,9 @@
     auctex
     (helm-bibtex :requires helm)
     (ivy-bibtex :requires ivy)
+    (citar :requires vertico)
+    (citar-embark :requires vertico)
+    (citar-org-roam :requires vertico)
     markdown-mode
     org
     org-ref
@@ -43,6 +46,45 @@
     (spacemacs/set-leader-keys-for-major-mode 'bibtex-mode
       "m" 'helm-bibtex)))
 
+(defun bibtex/init-citar ()
+  (use-package citar
+    :init
+    (dolist (hook '(LaTeX-mode-hook latex-mode-hook org-mode-hook))
+      (add-hook hook 'citar-capf-setup))
+    (setq citar-at-point-function 'embark-act)
+    (spacemacs/set-leader-keys-for-major-mode 'bibtex-mode "m" 'citar-open)
+    :config
+    (defun citar-create-indicator (icons-set icon unicode func tag color)
+      "Create a citar indicator with icon or unicode symbol based on display capabilities."
+      (citar-indicator-create
+       :symbol (if (or (display-graphic-p) (daemonp))
+                   (funcall icons-set icon :face color :v-adjust -0.1)
+                 unicode)
+       :function func
+       :padding "  "
+       :tag tag))
+    (setq citar-indicators
+          (list (citar-create-indicator #'all-the-icons-faicon "file-o" "📄" #'citar-has-files "has:files" 'all-the-icons-green)
+                (citar-create-indicator #'all-the-icons-octicon "link" "🔗" #'citar-has-links "has:links" 'all-the-icons-orange)
+                (citar-create-indicator #'all-the-icons-material "speaker_notes" "📝" #'citar-has-notes "has:notes" 'all-the-icons-blue)
+                (citar-create-indicator #'all-the-icons-faicon "circle-o" "◉" #'citar-is-cited "is:cited" 'all-the-icons-green)))))
+
+(defun bibtex/init-citar-embark ()
+  (use-package citar-embark
+    :defer t
+    :spacediminish t
+    :after (citar embark)
+    :init
+    (citar-embark-mode)))
+
+(defun bibtex/init-citar-org-roam ()
+  (use-package citar-org-roam
+    :defer t
+    :spacediminish t
+    :after (citar embark org-roam)
+    :init
+    (citar-org-roam-mode)))
+
 (defun bibtex/init-ivy-bibtex ()
   (use-package ivy-bibtex
     :defer t
@@ -55,8 +97,17 @@
     "ic" 'org-ref-insert-link))
 
 (defun bibtex/post-init-org ()
+  (setq org-cite-insert-processor 'citar
+        org-cite-follow-processor 'citar
+        org-cite-activate-processor 'citar)
   (spacemacs/set-leader-keys-for-major-mode 'org-mode
-    "ic" 'org-ref-insert-link))
+    "ic" 'org-ref-insert-link)
+  ;; Setup export processor; default csl/citeproc-el, with biblatex for
+  ;; latex
+  (setq org-cite-export-processors '((latex biblatex) (t csl))
+        org-support-shift-select t)
+  (require 'oc-biblatex)
+  (require 'oc-csl))
 
 (defun bibtex/init-org-ref ()
   (use-package org-ref
