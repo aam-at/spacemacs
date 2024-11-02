@@ -36,6 +36,8 @@
 (defvar helm-position 'bottom
   "Position in which to show the `helm' mini-buffer.")
 
+(defvar helm-use-icons nil
+  "If non nil, show icons in helm buffers.")
 
 (defvar spacemacs-helm-rg-max-column-number 512
   "Controls the maximum number of columns to display with ripgrep (otherwise

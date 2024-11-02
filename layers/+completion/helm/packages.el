@@ -32,6 +32,7 @@
                         :repo "smile13241324/helm-ag"))
     helm-comint
     helm-descbinds
+    (helm-icons :toggle helm-use-icons)
     (helm-ls-git :toggle (configuration-layer/layer-used-p 'git))
     helm-make
     helm-mode-manager
@@ -344,6 +345,12 @@
           helm-descbinds-disable-which-key nil)
     (add-hook 'helm-mode-hook 'helm-descbinds-mode)
     (spacemacs/set-leader-keys "?" 'helm-descbinds)))
+
+(defun helm/init-helm-icons ()
+  (use-package helm-icons
+    :defer t
+    :init
+    (helm-icons-enable)))
 
 (defun helm/init-helm-ls-git ()
   (use-package helm-ls-git
