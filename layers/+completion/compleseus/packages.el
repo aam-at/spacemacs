@@ -462,8 +462,14 @@
     :after vertico
     :init
     (setq vertico-posframe-poshandler 'posframe-poshandler-frame-center)
-    (setq vertico-posframe-width (round (* 0.618 (frame-width))))
-    (setq vertico-posframe-height (round (* 0.618 (frame-height))))
+    ;; Update vertico posframe dimensions
+    (defun update-vertico-posframe-dimensions ()
+      (setq vertico-posframe-width (round (* 0.618 (frame-width))))
+      (setq vertico-posframe-height (round (* 0.618 (frame-height))))
+      (setq vertico-count vertico-posframe-height))
+    (update-vertico-posframe-dimensions)
+    ;; Update on frame creation
+    (add-hook 'window-size-change-functions (lambda (_frame) (update-vertico-posframe-dimensions)))
     (setq vertico-posframe-parameters
           '((internal-border-width . 2)
             (left-fringe . 4)
